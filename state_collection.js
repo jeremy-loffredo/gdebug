@@ -3,6 +3,7 @@ var record_states = [];
 var record_timeout = null;
 var record = function(a) {
 	if (record_timeout !== null) {
+		console.warn('PUSING CHANGES ',a);
 		record_states.push(a.attributes);
 	}
 };
