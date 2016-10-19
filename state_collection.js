@@ -19,6 +19,6 @@ var State_Debugger = {
 	},
 	record: function(state) {
 		state.changed['modified_at'] = state.modified_at;
-		this.record_states.push(state.changed);
+		this.record_states.push($.extend(true,state.changed,{modified_at:state.get('modified_at')}));
 	},
 };
