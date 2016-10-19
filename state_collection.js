@@ -6,7 +6,6 @@ var State_Debugger = {
 		this.record_timeout = setTimeout(_.bind(function() {
 			var data = this.record_states.slice();
 			this.record_states = [];
-			console.log('Sending maybe ',data);
 			if (data.length) {
 				Data.dump_to_server('state_changes',data);
 			}
@@ -19,7 +18,6 @@ var State_Debugger = {
 		Data.state.off('change', this.record);
 	},
 	record: function(state) {
-		console.log('Recording state change');
 		state.changed['modified_at'] = state.modified_at;
 		this.record_states.push($.extend(true,state.changed,{modified_at:state.get('modified_at')}));
 	},
