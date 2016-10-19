@@ -1,28 +1,24 @@
-var record_states = [];
-
-var record_timeout = null;
-var record = function(a) {
-	if (record_timeout !== null) {
-		console.warn('PUSING CHANGES ',a);
-		record_states.push(a.attributes);
-	}
+var State_Debugger = {
+	record_states: [],
+	record_timeout: null,
+	start: function() {
+		Data.state.on('change', this.record, this);
+		this.record_timeout = setTimeout(_.bind(function() {
+			var data = $.extend(true,{},this.record_states);
+			this.record_states = [];
+			if (data.length) {
+				Data.dump_to_server('state_changes',data);
+			}
+			this.start();
+		},this),30000);
+	},
+	stop: function() {
+		clearTimeout(this.record_timeout);
+		this.record_timeout = null;
+		Data.state.off('change', this.record);
+	},
+	record: function(state) {
+		state.changed['modified_at'] = state.modified_at;
+		this.record_states.push(state.changed);
+	},
 };
-
-var start_send_records = function() {
-	record_timeout = setTimeout(function() {
-		var data = $.extend(true,{},record_states);
-		record_states = [];
-		Data.dump_to_server('state_changes',data);
-		record_timeout = setTimeout
-		start_send_records();
-	},30000);
-};
-
-var end_record_collection = function() {
-	clearTimeout(record_timeout);
-	record_timeout = null;
-	Data.state.off('change',record);
-};
-
-start_send_records();
-Data.state.on('change',record);
