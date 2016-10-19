@@ -4,7 +4,7 @@ var State_Debugger = {
 	start: function() {
 		Data.state.on('change', this.record, this);
 		this.record_timeout = setTimeout(_.bind(function() {
-			var data = $.extend(true,{},this.record_states);
+			var data = this.record_states.slice();
 			this.record_states = [];
 			if (data.length) {
 				Data.dump_to_server('state_changes',data);
